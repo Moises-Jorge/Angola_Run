@@ -1,2 +1,2 @@
 # Angola_Run
- Projecto da cadeira de Computaçõa Gráfica do ano lectivo 2022/2023 da Universidade Agostinho Neto
+ Project for the computer graphics subject for the 2022/2023 academic year at Agostinho Neto University
