@@ -11,7 +11,10 @@ class Scene01 extends Phaser.Scene {
         this.load.image('background', 'img/sky.png') 
 
         // Carregando a imagem do personagem (spritesheet = contem várias posições)(DEPOIS SUBSTITUIR COM A IMAGEM ORIGINAL DO PERSONAGEM PARA ESSE JOGO)
-        this.load.spritesheet('player', 'img/player.png', {frameWidth: 32, frameHeight: 32}) 
+        this.load.spritesheet('player', 'img/player.png', {frameWidth: 32, frameHeight: 32})
+        
+        // Carregando a imagem que vai servir de asfalto (platform)
+        this.load.image('asphalt', 'img/platform.png')
     }
 
     /**
@@ -30,6 +33,13 @@ class Scene01 extends Phaser.Scene {
         // Criando e adicionando funções às teclas (Para interagir com o personagem e para iniciar o jogo)
         this.player.canJump = true // variável que controla o salto do personagem
         this.keyBoard = this.input.keyboard.createCursorKeys()
+
+        // Criando e add o Asfalto (através de um grupo de objectos que vão ser configurados da mesma forma)
+        this.asphalts = this.physics.add.staticGroup()
+        this.asphalts.create(0, 600, 'asphalt').setScale(2, 1).setOrigin(0, 1).refreshBody()
+
+        // Criando o colisor entre o Asfalto e o Personagem
+        this.physics.add.collider(this.player, this.asphalts)
     }
 
     /**
