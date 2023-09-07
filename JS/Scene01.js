@@ -30,6 +30,17 @@ class Scene01 extends Phaser.Scene {
         this.player = this.physics.add.sprite(50, 500, 'player')
         .setCollideWorldBounds(true).setScale(2).setVelocityX(150)
 
+        // Criando ANIMAÇÕES para o personagem
+        this.anims.create({
+            key: 'walk',
+            frames: this.anims.generateFrameNumbers('player', {
+                start: 0,
+                end: 3
+            }),
+            frameRate: 8,
+            repeat: -1
+        })
+
         // Criando e adicionando funções às teclas (Para interagir com o personagem e para iniciar o jogo)
         this.player.canJump = true // variável que controla o salto do personagem
         this.keyBoard = this.input.keyboard.createCursorKeys()
@@ -52,8 +63,14 @@ class Scene01 extends Phaser.Scene {
     update() {
         // Movimentação do jogador no eixo "X": APENAS UM TESTE, DEPOIS REMOVER
         if (this.keyBoard.left.isDown) {
+            // Chamando e adicionando a animação ao personagem
+            this.player.anims.play('walk', true)
+            this.player.flipX = true // Virar o corpo para a esquerda
             this.player.setVelocityX(-150)
         } else {
+            // Chamando e adicionando a animação ao personagem
+            this.player.anims.play('walk', true)
+            this.player.flipX = false // Continuar virado para a frente
             this.player.setVelocityX(150)
         }
 
@@ -65,6 +82,12 @@ class Scene01 extends Phaser.Scene {
         // Recuperando o valor "True" para o personagem poder pular novamente
         if (!this.keyBoard.up.isDown && !this.player.canJump && this.player.body.touching.down) {
             this.player.canJump = true
+        }
+        // Chamando e adicionando a animação ao personagem
+        if (!this.player.body.touching.down) {
+            this.player.setFrame(
+                this.player.body.velocity.y < 0 ? 1 : 3
+            )
         }
     }
 }
