@@ -15,6 +15,9 @@ class Scene01 extends Phaser.Scene {
         
         // Carregando a imagem que vai servir de asfalto (platform)
         this.load.image('asphalt', 'img/platform.png')
+
+        // Carregando a imagem das moedas
+        this.load.spritesheet('coin', 'img/coin.png', {frameWidth: 32, frameHeight: 32})
     }
 
     /**
@@ -49,8 +52,35 @@ class Scene01 extends Phaser.Scene {
         this.asphalts = this.physics.add.staticGroup()
         this.asphalts.create(0, 600, 'asphalt').setScale(5, 1).setOrigin(0, 1).refreshBody()
 
-        // Criando o colisor entre o Asfalto e o Personagem
+        // Criando e adicionando MOEDAS ao jogo
+        this.coins = this.physics.add.group({
+            key: 'coin',
+            repeat: 30,
+            setXY: {
+                x: 300,
+                y: -50,
+                stepX: 50
+            }
+        })
+        // Criando ANIMAÇÕES para as moedas
+        this.anims.create({
+            key: 'spin',
+            frames: this.anims.generateFrameNumbers('coin', {
+                start: 0,
+                end: 4
+            }),
+            frameRate: 8,
+            repeat: -1
+        })
+        // Adicionando efeito bounce e aplicando a animação nas moedas
+        this.coins.children.iterate((c) => {
+            c.setBounceY(0.3)
+            c.anims.play('spin')
+        })
+
+        // Criando o colisor entre o Asfalto com o Personagem e as moedas
         this.physics.add.collider(this.player, this.asphalts)
+        this.physics.add.collider(this.coins, this.asphalts)
 
         // Redimensionando o Mundo de Jogo (aumentando a fronteira) e configurando a câmera para seguir o personagem
         this.physics.world.setBounds(0, 0, 2000, 600)
