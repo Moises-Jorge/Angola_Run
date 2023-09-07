@@ -23,7 +23,7 @@ class Scene01 extends Phaser.Scene {
     create() {
         // Adicionando a imagem de fundo no jogo
         this.background = this.add.image(0, 0, 'background').setOrigin(0,0)
-        this.background.displayWidth = 800
+        this.background.displayWidth = 2000
         this.background.displayHeight = 600
 
         // Adicionando o personagem no jogo e aumentando a sua escala
@@ -36,10 +36,14 @@ class Scene01 extends Phaser.Scene {
 
         // Criando e add o Asfalto (através de um grupo de objectos que vão ser configurados da mesma forma)
         this.asphalts = this.physics.add.staticGroup()
-        this.asphalts.create(0, 600, 'asphalt').setScale(2, 1).setOrigin(0, 1).refreshBody()
+        this.asphalts.create(0, 600, 'asphalt').setScale(5, 1).setOrigin(0, 1).refreshBody()
 
         // Criando o colisor entre o Asfalto e o Personagem
         this.physics.add.collider(this.player, this.asphalts)
+
+        // Redimensionando o Mundo de Jogo (aumentando a fronteira) e configurando a câmera para seguir o personagem
+        this.physics.world.setBounds(0, 0, 2000, 600)
+        this.cameras.main.startFollow(this.player).setBounds(0, 0, 2000, 600)
     }
 
     /**
@@ -54,12 +58,12 @@ class Scene01 extends Phaser.Scene {
         }
 
         // Movimentação do jogador no eixo "Y": Saltar e baixar
-        if (this.keyBoard.up.isDown && this.player.canJump) {
+        if (this.keyBoard.up.isDown && this.player.canJump && this.player.body.touching.down) {
             this.player.setVelocityY(-500)
             this.player.canJump = false
         }
         // Recuperando o valor "True" para o personagem poder pular novamente
-        if (!this.keyBoard.up.isDown && !this.player.canJump) {
+        if (!this.keyBoard.up.isDown && !this.player.canJump && this.player.body.touching.down) {
             this.player.canJump = true
         }
     }
