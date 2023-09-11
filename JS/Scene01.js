@@ -82,6 +82,14 @@ class Scene01 extends Phaser.Scene {
         this.physics.add.collider(this.player, this.asphalts)
         this.physics.add.collider(this.coins, this.asphalts)
 
+        // Criando a colisão que permite o personagem apanhar as moedas
+        this.physics.add.overlap(this.player, this.coins, this.collectCoin, null, this)
+
+        // Criando e inserindo o placar de moedas na tela
+        this.score = 0 // Contador de moedas
+        this.txtScore = this.add.text(15, 15, `SCORE: ${this.score}`, {fontSize: '32px'}).setShadow(0, 0, '#000', 3).setScrollFactor(0)
+        this.updateScore()
+
         // Redimensionando o Mundo de Jogo (aumentando a fronteira) e configurando a câmera para seguir o personagem
         this.physics.world.setBounds(0, 0, 2000, 600)
         this.cameras.main.startFollow(this.player).setBounds(0, 0, 2000, 600)
@@ -119,5 +127,23 @@ class Scene01 extends Phaser.Scene {
                 this.player.body.velocity.y < 0 ? 1 : 3
             )
         }
+    }
+
+    /**
+     * Método responsável pela coleta das moedas
+     */
+    collectCoin(player, coin) {
+        // Eliminando a moeda quando o personagem toca na mesma
+        coin.destroy()
+        this.score++
+        this.updateScore()
+    }
+
+    /**
+     * Método responsável por actualizar o placar
+     */
+    updateScore() {
+        // Verificação de dois dígitos de acordo com a quantidade de moedas coletadas
+        this.txtScore.setText(this.score < 10 ? `SCORE: 0${this.score}` : `SCORE: ${this.score}`)
     }
 }
