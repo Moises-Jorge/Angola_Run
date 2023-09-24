@@ -18,6 +18,9 @@ class Scene01 extends Phaser.Scene {
 
         // Carregando a imagem das moedas
         this.load.spritesheet('coin', 'img/coin.png', {frameWidth: 32, frameHeight: 32})
+
+        // Carregando a imagem do obstaculo ameaçador para o personagem
+        this.load.image('enemy', 'img/enemy.png') 
     }
 
     /**
@@ -32,6 +35,7 @@ class Scene01 extends Phaser.Scene {
         // Adicionando o personagem no jogo e aumentando a sua escala
         this.player = this.physics.add.sprite(50, 500, 'player')
         .setCollideWorldBounds(true).setScale(2).setVelocityX(150)
+        this.player.body.setSize(16, 32) // Redimensionando a área ocupada pelo personagem
 
         // Criando ANIMAÇÕES para o personagem
         this.anims.create({
@@ -78,54 +82,64 @@ class Scene01 extends Phaser.Scene {
             c.anims.play('spin')
         })
 
-        // Criando o colisor entre o Asfalto com o Personagem e as moedas
-        this.physics.add.collider(this.player, this.asphalts)
-        this.physics.add.collider(this.coins, this.asphalts)
-
-        // Criando a colisão que permite o personagem apanhar as moedas
-        this.physics.add.overlap(this.player, this.coins, this.collectCoin, null, this)
-
         // Criando e inserindo o placar de moedas na tela
         this.score = 0 // Contador de moedas
         this.txtScore = this.add.text(15, 15, `SCORE: ${this.score}`, {fontSize: '32px'}).setShadow(0, 0, '#000', 3).setScrollFactor(0)
         this.updateScore()
 
+        // Criando o grupo de ameaças e adicinado-os ao jogo
+        this.enemies = this.physics.add.group()
+        let enemy = this.enemies.create(450, 400, 'enemy').setCollideWorldBounds(true) // Código REUTILIZÁVEL: Phaser.Math.Between(50, 1950). Criando outra ameaça: enemy = this.enemies.create(200, 400, 'enemy')
+
+        // Criando as colisões entre os elementos do jogo (Asfalto, Personagem, moedas e as ameaças)
+        this.physics.add.collider(this.player, this.asphalts)
+        this.physics.add.collider(this.coins, this.asphalts)
+        this.physics.add.collider(this.enemies, this.asphalts)
+        this.physics.add.collider(this.player, this.enemies, this.enemyHit, null, this)
+        // Criando a colisão que permite o personagem apanhar as moedas
+        this.physics.add.overlap(this.player, this.coins, this.collectCoin, null, this)
+
         // Redimensionando o Mundo de Jogo (aumentando a fronteira) e configurando a câmera para seguir o personagem
         this.physics.world.setBounds(0, 0, 2000, 600)
         this.cameras.main.startFollow(this.player).setBounds(0, 0, 2000, 600)
+
+        // Variável que determina o fim do jogo (se o personagem entrar em contacto com uma ameaça)
+        this.gameOver = false
     }
 
     /**
      * Método usado para actualizar o jogo, ou seja, alterar as carecterísticas padrão de alguns objectos
      */
     update() {
-        // Movimentação do jogador no eixo "X": APENAS UM TESTE, DEPOIS REMOVER
-        if (this.keyBoard.left.isDown) {
-            // Chamando e adicionando a animação ao personagem
-            this.player.anims.play('walk', true)
-            this.player.flipX = true // Virar o corpo para a esquerda
-            this.player.setVelocityX(-150)
-        } else {
-            // Chamando e adicionando a animação ao personagem
-            this.player.anims.play('walk', true)
-            this.player.flipX = false // Continuar virado para a frente
-            this.player.setVelocityX(150)
-        }
+        if (!this.gameOver) {
+            // Movimentação do jogador no eixo "X": APENAS UM TESTE, DEPOIS REMOVER
+            if (this.keyBoard.left.isDown) {
+                // Chamando e adicionando a animação ao personagem
+                this.player.anims.play('walk', true)
+                this.player.flipX = true // Virar o corpo para a esquerda
+                this.player.setVelocityX(-150)
+            } else {
+                // Chamando e adicionando a animação ao personagem
+                this.player.anims.play('walk', true)
+                this.player.flipX = false // Continuar virado para a frente
+                this.player.setVelocityX(150)
+            }
 
-        // Movimentação do jogador no eixo "Y": Saltar e baixar
-        if (this.keyBoard.up.isDown && this.player.canJump && this.player.body.touching.down) {
-            this.player.setVelocityY(-500)
-            this.player.canJump = false
-        }
-        // Recuperando o valor "True" para o personagem poder pular novamente
-        if (!this.keyBoard.up.isDown && !this.player.canJump && this.player.body.touching.down) {
-            this.player.canJump = true
-        }
-        // Chamando e adicionando a animação ao personagem
-        if (!this.player.body.touching.down) {
-            this.player.setFrame(
-                this.player.body.velocity.y < 0 ? 1 : 3
-            )
+            // Movimentação do jogador no eixo "Y": Saltar e baixar
+            if (this.keyBoard.up.isDown && this.player.canJump && this.player.body.touching.down) {
+                this.player.setVelocityY(-500)
+                this.player.canJump = false
+            }
+            // Recuperando o valor "True" para o personagem poder pular novamente
+            if (!this.keyBoard.up.isDown && !this.player.canJump && this.player.body.touching.down) {
+                this.player.canJump = true
+            }
+            // Chamando e adicionando a animação ao personagem
+            if (!this.player.body.touching.down) {
+                this.player.setFrame(
+                    this.player.body.velocity.y < 0 ? 1 : 3
+                )
+            }
         }
     }
 
@@ -145,5 +159,15 @@ class Scene01 extends Phaser.Scene {
     updateScore() {
         // Verificação de dois dígitos de acordo com a quantidade de moedas coletadas
         this.txtScore.setText(this.score < 10 ? `SCORE: 0${this.score}` : `SCORE: ${this.score}`)
+    }
+
+    /**
+     * Método responsável por causar o Game Over
+     */
+    enemyHit(player, enemy) {
+        this.physics.pause()
+        player.anims.stop()
+        player.setTint(0xff0000)
+        this.gameOver = true
     }
 }
