@@ -20,7 +20,7 @@ class Scene01 extends Phaser.Scene {
         this.load.spritesheet('coin', 'img/coin.png', {frameWidth: 32, frameHeight: 32})
 
         // Carregando a imagem do obstaculo ameaçador para o personagem
-        this.load.image('enemy', 'img/enemy.png') 
+        this.load.image('enemy', 'img/hiace.png') 
     }
 
     /**
@@ -89,7 +89,11 @@ class Scene01 extends Phaser.Scene {
 
         // Criando o grupo de ameaças e adicinado-os ao jogo
         this.enemies = this.physics.add.group()
-        let enemy = this.enemies.create(450, 400, 'enemy').setCollideWorldBounds(true) // Código REUTILIZÁVEL: Phaser.Math.Between(50, 1950). Criando outra ameaça: enemy = this.enemies.create(200, 400, 'enemy')
+        this.enemies.create(450, 500, 'enemy')//.setCollideWorldBounds(true)
+        .setScale(1.5, 2.7).setSize(95, 28)//.setVelocityX(-200)
+        
+        this.enemies.create(1400, 500, 'enemy')//.setCollideWorldBounds(true)
+        .setScale(1.5, 2.7).setSize(95, 28)//.setVelocityX(-200)
 
         // Criando as colisões entre os elementos do jogo (Asfalto, Personagem, moedas e as ameaças)
         this.physics.add.collider(this.player, this.asphalts)
