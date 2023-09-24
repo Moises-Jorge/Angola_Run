@@ -7,14 +7,14 @@ class Scene01 extends Phaser.Scene {
      * Método responsável por carregar os recursos do jogo
      */
     preload() {
-        // Carregando a imagem de background (DEPOIS SUBSTITUIR COM A IMAGEM ORIGINAL DO FUNDO PARA ESSE JOGO)
-        this.load.image('background', 'img/sky.png') 
+        // Carregando a imagem de background
+        this.load.image('background', 'img/background.png') 
 
-        // Carregando a imagem do personagem (spritesheet = contem várias posições)(DEPOIS SUBSTITUIR COM A IMAGEM ORIGINAL DO PERSONAGEM PARA ESSE JOGO)
+        // Carregando a imagem do personagem (spritesheet = contem várias posições)
         this.load.spritesheet('player', 'img/player.png', {frameWidth: 32, frameHeight: 32})
         
-        // Carregando a imagem que vai servir de asfalto (platform)
-        this.load.image('asphalt', 'img/platform.png')
+        // Carregando a imagem do asfalto
+        this.load.image('asphalt', 'img/asphalt.png')
 
         // Carregando a imagem das moedas
         this.load.spritesheet('coin', 'img/coin.png', {frameWidth: 32, frameHeight: 32})
