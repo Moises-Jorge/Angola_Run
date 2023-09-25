@@ -90,10 +90,10 @@ class Scene01 extends Phaser.Scene {
         // Criando o grupo de ameaças e adicinado-os ao jogo
         this.enemies = this.physics.add.group()
         this.enemies.create(500, 500, 'enemy')//.setCollideWorldBounds(true)
-        .setScale(1.5, 2.7).setSize(95, 28)//.setVelocityX(-200)
+        .setScale(1.5, 2.7).setSize(95, 28).setVelocityX(-200)
         
         this.enemies.create(1400, 500, 'enemy')//.setCollideWorldBounds(true)
-        .setScale(1.5, 2.7).setSize(95, 28)//.setVelocityX(-200)
+        .setScale(1.5, 2.7).setSize(95, 28).setVelocityX(-200)
 
         // Criando as colisões entre os elementos do jogo (Asfalto, Personagem, moedas e as ameaças)
         this.physics.add.collider(this.player, this.asphalts)
