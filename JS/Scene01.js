@@ -33,7 +33,7 @@ class Scene01 extends Phaser.Scene {
         this.background.displayHeight = 600
 
         // Adicionando o personagem no jogo e aumentando a sua escala
-        this.player = this.physics.add.sprite(50, 500, 'player')
+        this.player = this.physics.add.sprite(0, 500, 'player')
         .setCollideWorldBounds(true).setScale(2).setVelocityX(150)
         this.player.body.setSize(16, 32) // Redimensionando a área ocupada pelo personagem
 
@@ -89,7 +89,7 @@ class Scene01 extends Phaser.Scene {
 
         // Criando o grupo de ameaças e adicinado-os ao jogo
         this.enemies = this.physics.add.group()
-        this.enemies.create(450, 500, 'enemy')//.setCollideWorldBounds(true)
+        this.enemies.create(500, 500, 'enemy')//.setCollideWorldBounds(true)
         .setScale(1.5, 2.7).setSize(95, 28)//.setVelocityX(-200)
         
         this.enemies.create(1400, 500, 'enemy')//.setCollideWorldBounds(true)
