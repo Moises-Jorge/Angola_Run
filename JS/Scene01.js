@@ -169,9 +169,11 @@ class Scene01 extends Phaser.Scene {
      * Método responsável por causar o Game Over
      */
     enemyHit(player, enemy) {
-        this.physics.pause()
-        player.anims.stop()
-        player.setTint(0xff0000)
-        this.gameOver = true
+        if (!enemy.body.touching.up) {
+            this.physics.pause()
+            player.anims.stop()
+            player.setTint(0xff0000)
+            this.gameOver = true
+        }
     }
 }
