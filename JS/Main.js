@@ -5,7 +5,7 @@ window.onload = function () {
         type: Phaser.AUTO,
         width: 800,
         height: 600,
-        scene: [Scene01],
+        scene: [StartScene,Scene01],
 
         // Configurando o motor de Física, que vai permitir ao personagem colidir com os outros objectos
         physics: {
