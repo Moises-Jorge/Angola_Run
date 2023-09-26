@@ -20,7 +20,12 @@ class Scene01 extends Phaser.Scene {
         this.load.spritesheet('coin', 'img/coin.png', {frameWidth: 32, frameHeight: 32})
 
         // Carregando a imagem do obstaculo ameaçador para o personagem
-        this.load.image('enemy', 'img/hiace.png') 
+        this.load.image('enemy', 'img/hiace.png')
+        
+        // Carregando os sons do jogo
+        this.load.audio('backSound', 'sounds/music.ogg')
+        this.load.audio('jumpSound', 'sounds/jump.ogg')
+        this.load.audio('getCoinSound', 'sounds/getcoin.ogg')
     }
 
     /**
@@ -107,6 +112,14 @@ class Scene01 extends Phaser.Scene {
         this.physics.world.setBounds(0, 0, 2000, 600)
         this.cameras.main.startFollow(this.player).setBounds(0, 0, 2000, 600)
 
+        // Adicionando os sons ao jogo
+        this.backSound = this.sound.add('backSound').play({
+            volume: 0.5,
+            loop: true
+        })
+        this.jumpSound = this.sound.add('jumpSound')
+        this.getCoinSound = this.sound.add('getCoinSound')
+
         // Variável que determina o fim do jogo (se o personagem entrar em contacto com uma ameaça)
         this.gameOver = false
     }
@@ -131,6 +144,7 @@ class Scene01 extends Phaser.Scene {
 
             // Movimentação do jogador no eixo "Y": Saltar e baixar
             if (this.keyBoard.up.isDown && this.player.canJump && this.player.body.touching.down) {
+                this.jumpSound.play()
                 this.player.setVelocityY(-500)
                 this.player.canJump = false
             }
@@ -152,6 +166,7 @@ class Scene01 extends Phaser.Scene {
      */
     collectCoin(player, coin) {
         // Eliminando a moeda quando o personagem toca na mesma
+        this.getCoinSound.play()
         coin.destroy()
         this.score++
         this.updateScore()
@@ -170,6 +185,7 @@ class Scene01 extends Phaser.Scene {
      */
     enemyHit(player, enemy) {
         if (!enemy.body.touching.up) {
+            this.backSound.stop()
             this.physics.pause()
             player.anims.stop()
             player.setTint(0xff0000)
